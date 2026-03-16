@@ -9,6 +9,15 @@ const AppError = require("../utils/AppError");
 
 const SECRET = "segredo_super";
 
+function isPasswordStrong(password) {
+  const hasMinLength = password.length >= 8;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+
+  return hasMinLength && hasUppercase && hasNumber && hasSpecialChar;
+}
+
 // =========================
 // REGISTER
 // =========================
@@ -18,6 +27,13 @@ router.post("/register", async (req, res, next) => {
 
     if (!email || !password) {
       throw new AppError("Email e senha são obrigatórios", 400);
+    }
+
+    if (!isPasswordStrong(password)) {
+      throw new AppError(
+        "A senha deve ter pelo menos 8 caracteres, 1 letra maiúscula, 1 número e 1 caractere especial",
+        400
+      );
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
