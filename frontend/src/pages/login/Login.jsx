@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const navigate = useNavigate();
 
@@ -21,7 +22,11 @@ function Login() {
     const data = await response.json();
 
     if (data.token) {
-      localStorage.setItem("token", data.token);
+      if (rememberMe) {
+        localStorage.setItem("token", data.token);
+      } else {
+        sessionStorage.setItem("token", data.token);
+      }
       alert("Login realizado!");
 
       navigate("/home"); // redireciona
@@ -51,6 +56,17 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+        </div>
+
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
+            Lembre de mim
+          </label>
         </div>
 
         <button type="submit">Entrar</button>

@@ -1,0 +1,39 @@
+.input {
+  border-bottom: 10px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.password-requirements-box {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid darkgray;
+  padding: 8px;
+  align-items: flex-start;
+  border-radius: 20px;
+}
+
+.password-requirements-box p {
+  font-size: 15px;
+}
+
+.register-button {
+  background-color:rgb(54, 54, 54);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+

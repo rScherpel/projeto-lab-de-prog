@@ -5,7 +5,7 @@ function ProtectedRoute({ children }) {
   const [isValid, setIsValid] = useState(undefined);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!token) {
       setIsValid(false);
       return;
@@ -31,6 +31,7 @@ function ProtectedRoute({ children }) {
       })
       .catch(() => {
         localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         setIsValid(false);
       });
   }, []);
