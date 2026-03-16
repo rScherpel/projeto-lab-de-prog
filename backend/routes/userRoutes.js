@@ -1,13 +1,15 @@
 const express = require("express");
-const authMiddleware = require("../middleware/authMiddleware");
-
 const router = express.Router();
 
+const authMiddleware = require("../middleware/authMiddleware");
+
 router.get("/profile", authMiddleware, (req, res) => {
+
   res.json({
-    message: "Rota protegida acessada",
+    message: "Rota protegida funcionando",
     user: req.user
   });
+
 });
 
 module.exports = router;

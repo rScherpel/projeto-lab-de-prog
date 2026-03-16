@@ -1,22 +1,28 @@
 const jwt = require("jsonwebtoken");
+const AppError = require("../utils/AppError");
 
-const SECRET = "segredo-super";
+const SECRET = "segredo_super";
 
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).json({ message: "Token não fornecido" });
+    return next(new AppError("Token não fornecido", 401));
   }
 
-  const token = authHeader.split(" ")[1];
+  const parts = authHeader.split(" ");
+  if (parts.length !== 2) {
+    return next(new AppError("Cabeçalho de autorização inválido", 401));
+  }
+
+  const token = parts[1];
 
   try {
     const decoded = jwt.verify(token, SECRET);
     req.user = decoded;
     next();
-  } catch {
-    return res.status(401).json({ message: "Token inválido" });
+  } catch (error) {
+    next(new AppError("Token inválido", 401));
   }
 }
 
