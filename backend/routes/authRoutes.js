@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const users = require("../data/users");
+const users = require("../data/user");
 
 const router = express.Router();
 const SECRET = "segredo-super";
