@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { handleLoginSubmit } from "./login.js";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -10,29 +11,7 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    const response = await fetch("http://localhost:3000/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-
-    if (data.token) {
-      if (rememberMe) {
-        localStorage.setItem("token", data.token);
-      } else {
-        sessionStorage.setItem("token", data.token);
-      }
-      alert("Login realizado!");
-
-      navigate("/home"); // redireciona
-    } else {
-      alert(data.message);
-    }
+    await handleLoginSubmit(email, password, rememberMe, navigate);
   };
 
   return (
