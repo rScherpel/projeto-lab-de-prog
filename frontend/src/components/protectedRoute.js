@@ -1,12 +1,14 @@
+import { getToken, clearTokens } from "@/utils/auth.js";
+
 export const validateToken = async () => {
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+  const token = getToken();
   
   if (!token) {
     return false;
   }
 
   try {
-    const response = await fetch("http://localhost:3000/api/token/validate", {
+    const response = await fetch("http://localhost:3000/api/user/validate-token", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -24,8 +26,7 @@ export const validateToken = async () => {
       throw new Error("Token inválido");
     }
   } catch (error) {
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
+    clearTokens();
     return false;
   }
 };

@@ -20,4 +20,13 @@ router.post("/logout", authMiddleware, (req, res) => {
   });
 });
 
+router.get("/validate-token", authMiddleware, (req, res) => {
+  // Se chegou aqui, o token é válido
+  res.status(200).json({
+    valid: true,
+    message: "Token é válido",
+    user: req.user
+  });
+});
+
 module.exports = router;
