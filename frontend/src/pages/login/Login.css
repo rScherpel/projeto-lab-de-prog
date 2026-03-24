@@ -1,14 +1,14 @@
-.register-container {
+.login-container {
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
   margin: 0 auto;
   padding: 20px;
 }
 
-.register-form {
+.login-form {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -23,7 +23,6 @@
 .form-group label {
   font-weight: 500;
   color: #333;
-  font-size: 14px;
 }
 
 .form-group input[type="email"],
@@ -39,7 +38,6 @@
 .form-group input[type="password"]:focus {
   outline: none;
   border-color: #4a90e2;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
 .form-group input.input-error {
@@ -82,63 +80,25 @@
   font-size: 14px;
 }
 
-/* Password Requirements Box */
-.password-requirements-box {
+.checkbox-group {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 8px;
-  border: 1px solid #e8daef;
-  border-radius: 5px;
-  padding: 12px;
-  background-color: #faf8fd;
 }
 
-.password-requirements-box p {
+.checkbox-group input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+.checkbox-group label {
+  cursor: pointer;
   margin: 0;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #555;
+  font-weight: normal;
 }
 
-.password-requirements-box .requirement-met {
-  color: #27ae60;
-  font-weight: 500;
-}
-
-.password-requirements-box .requirement-pending {
-  color: #e74c3c;
-  font-weight: 500;
-}
-
-/* Password Match Indicator */
-.password-match-indicator {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #fef9e7;
-  border: 1px solid #f9e79f;
-  color: #d68910;
-}
-
-.password-match-indicator.success {
-  background-color: #d5f4e6;
-  border-color: #27ae60;
-  color: #229954;
-}
-
-.password-match-indicator.error {
-  background-color: #fadbd8;
-  border-color: #e74c3c;
-  color: #c0392b;
-}
-
-/* Register Button */
-.register-button {
+.login-button {
   background-color: #4a90e2;
   color: white;
   padding: 12px;
@@ -150,33 +110,31 @@
   transition: background-color 0.3s, opacity 0.3s;
 }
 
-.register-button:hover:not(:disabled) {
+.login-button:hover:not(:disabled) {
   background-color: #357abd;
 }
 
-.register-button:disabled {
+.login-button:disabled {
   background-color: #95a5a6;
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-/* Login Link */
-.login-link {
+.register-link {
   text-align: center;
   font-size: 14px;
 }
 
-.login-link a {
+.register-link a {
   color: #4a90e2;
   text-decoration: none;
   font-weight: 600;
 }
 
-.login-link a:hover {
+.register-link a:hover {
   text-decoration: underline;
 }
 
-/* Success Message */
 .success-message {
   background-color: #d5f4e6;
   border: 1px solid #27ae60;
@@ -189,7 +147,6 @@
   font-size: 14px;
 }
 
-/* Loading Spinner */
 .loading-spinner {
   display: inline-block;
   width: 16px;
@@ -205,19 +162,3 @@
     transform: rotate(360deg);
   }
 }
-
-/* Responsive */
-@media (max-width: 600px) {
-  .register-container {
-    max-width: 100%;
-    padding: 15px;
-  }
-
-  .form-group input[type="email"],
-  .form-group input[type="password"] {
-    font-size: 16px;
-  }
-}
-
-
-

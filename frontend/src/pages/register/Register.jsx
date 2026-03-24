@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
 import {
   getPasswordChecks,
   passwordRequirements,
   getMissingRequirements,
   checkPasswordsMatch,
-  canSubmitForm,
+  validateRegisterFields,
   handleRegisterSubmit,
 } from "./register.js";
 
@@ -14,80 +14,154 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const passwordChecks = getPasswordChecks(password);
   const missingPasswordRequirements = getMissingRequirements(passwordChecks);
   const passwordsMatch = checkPasswordsMatch(password, confirmPassword);
-  const canSubmit = canSubmitForm(email, missingPasswordRequirements, passwordsMatch);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setSuccess(false);
 
-    if (!canSubmit) {
+    // Validar campos
+    const fieldErrors = validateRegisterFields(email, password, confirmPassword, missingPasswordRequirements);
+    if (Object.keys(fieldErrors).length > 0) {
+      setErrors(fieldErrors);
       return;
     }
 
-    const message = await handleRegisterSubmit(email, password);
-    alert(message);
+    setErrors({});
+    const result = await handleRegisterSubmit(email, password, setErrors, setLoading);
+
+    if (result.success) {
+      setSuccess(true);
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    }
   };
 
   return (
-    <div>
-      <h1>Registro</h1>
-      <div className="input-wrapper">
-        <form onSubmit={handleRegister}>
-          <div className="input">
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="input-1"
-            />
-          </div>
+    <div className="register-container">
+      <h1>Criar Conta</h1>
 
-          <div className="input">
-            <label>Senha</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input-1"
-            />
+      {/* Erro geral */}
+      {errors.submit && (
+        <div className="error-box">
+          <strong>⚠️</strong>
+          <div className="error-content">
+            <p>{errors.submit}</p>
           </div>
+        </div>
+      )}
 
-          <div className="input">
-            <label>Confirmar senha</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="input-1"
-            />
+      {/* Sucesso */}
+      {success && (
+        <div className="success-message">
+          ✓ Conta criada com sucesso! Redirecionando para login...
+        </div>
+      )}
+
+      <form onSubmit={handleRegister} className="register-form">
+        {/* Email */}
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
+            className={errors.email ? "input-error" : ""}
+            placeholder="seu@email.com"
+          />
+          {errors.email && <div className="error-message">✗ {errors.email}</div>}
+        </div>
+
+        {/* Senha */}
+        <div className="form-group">
+          <label htmlFor="password">Senha</label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
+            className={errors.password ? "input-error" : ""}
+            placeholder="••••••"
+          />
+          {errors.password && <div className="error-message">✗ {errors.password}</div>}
+        </div>
+
+        {/* Requisitos de Senha */}
+        {password.length > 0 && (
+          <div className="password-requirements-box">
+            {passwordRequirements.map((requirement) => {
+              const isMet = passwordChecks[requirement.key];
+              return (
+                <p key={requirement.key} className={isMet ? "requirement-met" : "requirement-pending"}>
+                  {isMet ? "✓" : "✗"} {requirement.message}
+                </p>
+              );
+            })}
           </div>
-          {password.length > 0 && missingPasswordRequirements.length > 0 && (
-            <div className="password-requirements-box">
-              {missingPasswordRequirements.map((requirement) => (
-                <p key={requirement.key}>{requirement.message}</p>
-              ))}
-            </div>
-          )}
-          {confirmPassword.length > 0 && !passwordsMatch && (
-            <p>A confirmação de senha não confere.</p>
-          )}
+        )}
 
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="register-button"
+        {/* Confirmar Senha */}
+        <div className="form-group">
+          <label htmlFor="confirmPassword">Confirmar Senha</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            disabled={loading}
+            className={errors.confirmPassword ? "input-error" : ""}
+            placeholder="••••••"
+          />
+          {errors.confirmPassword && <div className="error-message">✗ {errors.confirmPassword}</div>}
+        </div>
+
+        {/* Indicador de Compatibilidade */}
+        {confirmPassword.length > 0 && (
+          <div
+            className={`password-match-indicator ${
+              passwordsMatch
+                ? "success"
+                : "error"
+            }`}
           >
-            Registrar
-          </button>
-        </form>
-        <p>
-          Já tem conta? <Link to="/">Login</Link>
-        </p>
-      </div>
+            {passwordsMatch ? "✓" : "✗"}{" "}
+            {passwordsMatch ? "Senhas conferem" : "As senhas não conferem"}
+          </div>
+        )}
+
+        {/* Botão de Registro */}
+        <button
+          type="submit"
+          className="register-button"
+          disabled={loading || missingPasswordRequirements.length > 0 || !passwordsMatch || !email}
+        >
+          {loading ? (
+            <>
+              <span className="loading-spinner"></span> Criando conta...
+            </>
+          ) : (
+            "Registrar"
+          )}
+        </button>
+      </form>
+
+      <p className="login-link">
+        Já tem conta? <Link to="/">Fazer Login</Link>
+      </p>
     </div>
   );
 }

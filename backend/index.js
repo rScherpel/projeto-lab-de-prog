@@ -12,6 +12,16 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
+// Health Check
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || "development",
+  });
+});
+
 app.use("/api", authRoutes);        // públicas
 app.use("/api/user", userRoutes);   // protegidas
 
@@ -19,4 +29,5 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
+  console.log(`Health check disponível em http://localhost:${PORT}/health`);
 });
