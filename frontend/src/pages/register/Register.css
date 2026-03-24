@@ -26,6 +26,10 @@
   font-size: 14px;
 }
 
+.email-input-wrapper {
+  position: relative;
+}
+
 .form-group input[type="email"],
 .form-group input[type="password"] {
   padding: 10px;
@@ -33,6 +37,8 @@
   border-radius: 5px;
   font-size: 14px;
   transition: border-color 0.3s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group input[type="email"]:focus,
@@ -44,6 +50,45 @@
 
 .form-group input.input-error {
   border-color: #e74c3c;
+}
+
+.form-group input.input-success {
+  border-color: #27ae60;
+}
+
+/* Email Suggestions */
+.email-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #2d2d2d;
+  border: 1px solid #3a3a3a;
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.suggestion-item {
+  padding: 10px 12px;
+  color: #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 14px;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background-color: #4a90e2;
+  color: #ffffff;
+  font-weight: 500;
 }
 
 .error-message {
@@ -87,10 +132,10 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border: 1px solid #e8daef;
+  border: 1px solid #3a3a3a;
   border-radius: 5px;
   padding: 12px;
-  background-color: #faf8fd;
+  background-color: #1e1e1e;
 }
 
 .password-requirements-box p {
@@ -99,16 +144,46 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #555;
+  color: #e0e0e0;
 }
 
 .password-requirements-box .requirement-met {
-  color: #27ae60;
+  color: #4ade80;
   font-weight: 500;
 }
 
 .password-requirements-box .requirement-pending {
-  color: #e74c3c;
+  color: #ff6b6b;
+  font-weight: 500;
+}
+
+/* Email Requirements Box */
+.email-requirements-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid #3a3a3a;
+  border-radius: 5px;
+  padding: 12px;
+  background-color: #1e1e1e;
+}
+
+.email-requirements-box p {
+  margin: 0;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #e0e0e0;
+}
+
+.email-requirements-box .requirement-met {
+  color: #4ade80;
+  font-weight: 500;
+}
+
+.email-requirements-box .requirement-pending {
+  color: #ff6b6b;
   font-weight: 500;
 }
 

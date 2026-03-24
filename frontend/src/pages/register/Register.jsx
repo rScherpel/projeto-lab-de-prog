@@ -8,6 +8,9 @@ import {
   checkPasswordsMatch,
   validateRegisterFields,
   handleRegisterSubmit,
+  getEmailChecks,
+  emailRequirements,
+  getEmailSuggestions,
 } from "./register.js";
 
 function Register() {
@@ -17,11 +20,20 @@ function Register() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showEmailSuggestions, setShowEmailSuggestions] = useState(false);
   const navigate = useNavigate();
 
   const passwordChecks = getPasswordChecks(password);
   const missingPasswordRequirements = getMissingRequirements(passwordChecks);
   const passwordsMatch = checkPasswordsMatch(password, confirmPassword);
+  const emailChecks = getEmailChecks(email);
+  const missingEmailRequirements = emailRequirements.filter((req) => !emailChecks[req.key]);
+  const emailSuggestions = getEmailSuggestions(email);
+
+  const handleEmailSuggestionClick = (suggestion) => {
+    setEmail(suggestion);
+    setShowEmailSuggestions(false);
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -73,17 +85,46 @@ function Register() {
         {/* Email */}
         <div className="form-group">
           <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={loading}
-            className={errors.email ? "input-error" : ""}
-            placeholder="seu@email.com"
-          />
+          <div className="email-input-wrapper">
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onFocus={() => setShowEmailSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowEmailSuggestions(false), 200)}
+              disabled={loading}
+              className={errors.email ? "input-error" : emailChecks.isValid ? "input-success" : ""}
+              placeholder="seu@email.com"
+            />
+            {/* Email Suggestions Dropdown */}
+            {showEmailSuggestions && emailSuggestions.length > 0 && (
+              <div className="email-suggestions">
+                {emailSuggestions.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    className="suggestion-item"
+                    onClick={() => handleEmailSuggestionClick(suggestion)}
+                  >
+                    {suggestion}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           {errors.email && <div className="error-message">✗ {errors.email}</div>}
         </div>
+
+        {/* Validação de Email em Tempo Real - Apenas os pendentes */}
+        {email.length > 0 && missingEmailRequirements.length > 0 && (
+          <div className="email-requirements-box">
+            {missingEmailRequirements.map((requirement) => (
+              <p key={requirement.key} className="requirement-pending">
+                ✗ {requirement.message}
+              </p>
+            ))}
+          </div>
+        )}
 
         {/* Senha */}
         <div className="form-group">
@@ -100,17 +141,14 @@ function Register() {
           {errors.password && <div className="error-message">✗ {errors.password}</div>}
         </div>
 
-        {/* Requisitos de Senha */}
-        {password.length > 0 && (
+        {/* Requisitos de Senha - Apenas os pendentes */}
+        {password.length > 0 && missingPasswordRequirements.length > 0 && (
           <div className="password-requirements-box">
-            {passwordRequirements.map((requirement) => {
-              const isMet = passwordChecks[requirement.key];
-              return (
-                <p key={requirement.key} className={isMet ? "requirement-met" : "requirement-pending"}>
-                  {isMet ? "✓" : "✗"} {requirement.message}
-                </p>
-              );
-            })}
+            {missingPasswordRequirements.map((requirement) => (
+              <p key={requirement.key} className="requirement-pending">
+                ✗ {requirement.message}
+              </p>
+            ))}
           </div>
         )}
 
@@ -147,7 +185,7 @@ function Register() {
         <button
           type="submit"
           className="register-button"
-          disabled={loading || missingPasswordRequirements.length > 0 || !passwordsMatch || !email}
+          disabled={loading || missingPasswordRequirements.length > 0 || !passwordsMatch || !emailChecks.isValid}
         >
           {loading ? (
             <>

@@ -26,10 +26,7 @@ export const validateLoginFields = (email, password) => {
 // Mapeamento de erros específicos do servidor
 const mapErrorMessage = (statusCode, serverMessage) => {
   const errorMap = {
-    400: "Email ou senha incorretos",
-    401: "Não autorizado. Verifique suas credenciais",
-    404: "Usuário não encontrado",
-    409: "Conflito ao fazer login. Tente novamente",
+    401: "Login ou senha incorretos",
     500: "Erro no servidor. Tente novamente mais tarde",
   };
 

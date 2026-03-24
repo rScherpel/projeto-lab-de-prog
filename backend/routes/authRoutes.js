@@ -9,6 +9,17 @@ const AppError = require("../utils/AppError");
 
 const SECRET = "segredo_super";
 
+// Validar formato de email com regex robusto
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  return emailRegex.test(email);
+}
+
+// Normalizar email: remover espaços em branco e converter para minúsculas
+function normalizeEmail(email) {
+  return email.trim().toLowerCase();
+}
+
 function isPasswordStrong(password) {
   const hasMinLength = password.length >= 8;
   const hasUppercase = /[A-Z]/.test(password);
@@ -23,12 +34,27 @@ function isPasswordStrong(password) {
 // =========================
 router.post("/register", async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
 
+    // Validações básicas
     if (!email || !password) {
       throw new AppError("Email e senha são obrigatórios", 400);
     }
 
+    // Normalizar email
+    email = normalizeEmail(email);
+
+    // Validar formato do email
+    if (!validateEmail(email)) {
+      throw new AppError("Email inválido. Use o formato: seu@email.com", 400);
+    }
+
+    // Validar comprimento do email
+    if (email.length > 255) {
+      throw new AppError("Email muito longo (máximo 255 caracteres)", 400);
+    }
+
+    // Validar força da senha
     if (!isPasswordStrong(password)) {
       throw new AppError(
         "A senha deve ter pelo menos 8 caracteres, 1 letra maiúscula, 1 número e 1 caractere especial",
@@ -36,19 +62,35 @@ router.post("/register", async (req, res, next) => {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const sql = "INSERT INTO users (email, password) VALUES (?, ?)";
-
-    db.run(sql, [email, hashedPassword], function (err) {
+    // Verificar se o email já existe
+    const checkSql = "SELECT id FROM users WHERE email = ?";
+    db.get(checkSql, [email], async (err, existingUser) => {
       if (err) {
-        return next(new AppError("Usuário já existe", 400));
+        return next(new AppError("Erro ao verificar email", 500));
       }
 
-      res.json({
-        message: "Usuário criado com sucesso",
-        id: this.lastID,
-      });
+      if (existingUser) {
+        return next(new AppError("Este email já está registrado", 409));
+      }
+
+      // Se email é novo, criar o usuário
+      try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const insertSql = "INSERT INTO users (email, password) VALUES (?, ?)";
+
+        db.run(insertSql, [email, hashedPassword], function (err) {
+          if (err) {
+            return next(new AppError("Erro ao criar usuário", 500));
+          }
+
+          res.status(201).json({
+            message: "Usuário criado com sucesso",
+            id: this.lastID,
+          });
+        });
+      } catch (hashError) {
+        next(new AppError("Erro ao processar a senha", 500));
+      }
     });
 
   } catch (error) {
@@ -60,7 +102,10 @@ router.post("/register", async (req, res, next) => {
 // LOGIN
 // =========================
 router.post("/login", (req, res, next) => {
-  const { email, password } = req.body;
+  let { email, password } = req.body;
+
+  // Normalizar email
+  email = normalizeEmail(email);
 
   const sql = "SELECT * FROM users WHERE email = ?";
 
@@ -69,14 +114,15 @@ router.post("/login", (req, res, next) => {
       return next(new AppError("Erro no servidor", 500));
     }
 
+    // Mensagem genérica para usuário não encontrado ou senha incorreta
     if (!user) {
-      return next(new AppError("Usuário não encontrado", 404));
+      return next(new AppError("Login ou senha incorretos", 401));
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
-      return next(new AppError("Senha incorreta", 401));
+      return next(new AppError("Login ou senha incorretos", 401));
     }
 
     const token = jwt.sign(
