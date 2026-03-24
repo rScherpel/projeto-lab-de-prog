@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { handleNavigate } from "./dashboard.js";
+import { handleNavigate, handleLogout } from "./dashboard.js";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -12,6 +12,12 @@ function Dashboard() {
 
       <button onClick={() => navigate("/home")}>
         Voltar para Home
+      </button>
+
+      <br /><br />
+
+      <button onClick={() => handleLogout(navigate)}>
+        Logout
       </button>
     </div>
   );

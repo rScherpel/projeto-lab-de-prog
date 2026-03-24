@@ -12,4 +12,12 @@ router.get("/profile", authMiddleware, (req, res) => {
 
 });
 
+router.post("/logout", authMiddleware, (req, res) => {
+  // No JWT, o logout é feito apenas no cliente removendo o token
+  // O backend valida que o token é válido antes de confirmar
+  res.status(200).json({
+    message: "Logout realizado com sucesso"
+  });
+});
+
 module.exports = router;
