@@ -22,9 +22,11 @@ function Login() {
     if (result) {
       setSuccess(true);
       // Limpar formulário após sucesso
-      setEmail("");
-      setPassword("");
-      setRememberMe(false);
+      setTimeout(() => {
+        setEmail("");
+        setPassword("");
+        setRememberMe(false);
+      }, 500);
     }
   };
 
