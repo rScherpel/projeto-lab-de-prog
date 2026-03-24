@@ -56,20 +56,22 @@ Aplicação full-stack com autenticação JWT, construída com React (frontend) 
 
 ### 1. Clonar o Repositório
 ```bash
-git clone <seu-repositorio>
+git clone https://github.com/rScherpel/projeto-lab-de-prog.git
 cd "Lab de Prog"
 ```
 
-### 2. Instalar Dependências do Backend
+### 2. Instalar Dependências
+
+Um comando instala tudo de uma vez:
 ```bash
-cd backend
-npm install
+npm install && npm run install-all
 ```
 
-### 3. Instalar Dependências do Frontend
+Ou manualmente (de um único terminal):
 ```bash
-cd ../frontend
-npm install
+npm install                  # Raiz
+cd backend && npm install && cd ..    # Backend
+cd frontend && npm install && cd ..   # Frontend
 ```
 
 ---
@@ -86,41 +88,34 @@ npm install
 - Banco de dados SQLite: `app.db`
 - Tabelas: `users` (com email e senha criptografada)
 
-#### Variáveis de Ambiente (opcional)
-Crie um arquivo `.env` na pasta `backend/`:
-```env
-PORT=3000
-NODE_ENV=development
-```
-
 ### Frontend
 
 #### Arquivo: `frontend/vite.config.js`
 - Porta padrão: **5173** (durante desenvolvimento)
 - Base: `/`
 
-#### Arquivo: `frontend/.env` (opcional)
-```env
-VITE_API_URL=http://localhost:3000/api
-```
-
----
-
 ## 🏃 Como Executar
 
-### Iniciar Backend
-```bash
-cd backend
-npm run dev
-```
-✅ Servidor rodando em: `http://localhost:3000`
+Execute tudo com um único comando pela raiz:
 
-### Iniciar Frontend (em outro terminal)
 ```bash
-cd frontend
 npm run dev
 ```
-✅ Aplicação rodando em: `http://localhost:5173`
+
+✅ Backend rodando em: `http://localhost:3000`
+✅ Frontend rodando em: `http://localhost:5173`
+
+**Pronto!** Ambas as aplicações estão rodando automaticamente.
+
+### Alternativa: Executar Separadamente (se necessário)
+
+```bash
+# Somente backend
+npm run backend
+
+# Somente frontend
+npm run frontend
+```
 
 ---
 
@@ -253,17 +248,12 @@ curl -X POST http://localhost:3000/api/login \
 
 ## 📝 Scripts Disponíveis
 
-### Backend
+### 🎯 Pela Raiz (Recomendado)
 ```bash
-npm run dev        # Inicia o servidor (node index.js)
-```
-
-### Frontend
-```bash
-npm run dev        # Inicia servidor de desenvolvimento Vite
-npm run build      # Constrói para producão
-npm run preview    # Pré-visualiza a build
-npm run lint       # Executa ESLint
+npm run dev           # ⚡ Backend + Frontend simultaneamente
+npm run install-all   # 📦 Instala todas as dependências
+npm run backend       # 🔧 Apenas backend (porta 3000)
+npm run frontend      # 🎨 Apenas frontend (porta 5173)
 ```
 
 ---
@@ -290,8 +280,4 @@ ISC
 Rafael
 
 ---
-
-## 📞 Suporte
-
-Para dúvidas ou problemas, verifique os logs do console e do servidor.
 

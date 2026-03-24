@@ -1,9 +1,10 @@
 {
   "name": "lab-de-prog",
   "version": "1.0.0",
-  "description": "",
+  "description": "Aplicação de Login e Registro com autenticação JWT",
   "main": "index.js",
   "scripts": {
+    "install-all": "cd backend && npm install && cd ../frontend && npm install && cd ..",
     "frontend": "cd frontend && npm run dev",
     "backend": "fuser -k 3000/tcp >/dev/null 2>&1 || true && cd backend && npm run dev",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
@@ -12,8 +13,8 @@
     "type": "git",
     "url": "git+https://github.com/rScherpel/projeto-lab-de-prog.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["auth", "jwt", "react", "express"],
+  "author": "Rafael",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
