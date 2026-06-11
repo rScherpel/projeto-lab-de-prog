@@ -3,6 +3,11 @@ node_modules/
 */node_modules/
 //teste@    teste.com
 //Teste@123
+
+# Test Coverage
+coverage/
+*/coverage/
+
 # Build outputs
 dist/
 build/
