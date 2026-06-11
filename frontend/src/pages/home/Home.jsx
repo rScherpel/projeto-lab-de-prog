@@ -1,30 +1,18 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { handleLogout } from "./home.js";
+import Projects from "@/pages/projects/Projects";
 
 function Home() {
   const navigate = useNavigate();
 
-  const logout = () => {
-    handleLogout(navigate);
-  };
+  useEffect(() => {
+    // Redirecionar para /projects ao montar o componente
+    // Comentado para mostrar Projects diretamente na Home
+    // navigate("/projects");
+  }, [navigate]);
 
-  return (
-    <div>
-      <h1>Home</h1>
-
-      <p>Usuário logado.</p>
-
-      <button onClick={() => navigate("/dashboard")}>
-        Ir para Dashboard
-      </button>
-
-      <br /><br />
-
-      <button onClick={logout}>
-        Logout
-      </button>
-    </div>
-  );
+  // Renderizar Projects diretamente na Home
+  return <Projects />;
 }
 
 export default Home;

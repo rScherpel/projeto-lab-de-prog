@@ -4,13 +4,24 @@ require("./database/database");
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const projectRoutes = require("./routes/projectRoutes");
+const issueRoutes = require("./routes/issueRoutes");
+const sprintRoutes = require("./routes/sprintRoutes");
+const commentRoutes = require("./routes/commentRoutes");
 const errorHandler = require("./middleware/errorHandler");
+const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// Middleware de logging para todas as requisições
+app.use((req, res, next) => {
+  console.log(`[HTTP] ${req.method} ${req.path}`);
+  next();
+});
 
 // Rota raiz
 app.get("/", (req, res) => {
@@ -23,6 +34,10 @@ app.get("/", (req, res) => {
       login: "POST /api/login",
       profile: "GET /api/user/profile",
       logout: "POST /api/user/logout",
+      projects: "GET /api/projects | POST /api/projects",
+      issues: "GET /api/issues/project/:id | POST /api/issues",
+      sprints: "GET /api/sprints/project/:id | POST /api/sprints",
+      comments: "GET /api/comments/issue/:id | POST /api/comments",
     },
     frontend: "http://localhost:5173",
   });
@@ -38,8 +53,21 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.use("/api", authRoutes);        // públicas
-app.use("/api/user", userRoutes);   // protegidas
+// Rotas específicas primeiro (mais específicas)
+app.use("/api/projects", authMiddleware, projectRoutes);
+app.use("/api/issues", authMiddleware, issueRoutes);
+app.use("/api/sprints", authMiddleware, sprintRoutes);
+app.use("/api/comments", authMiddleware, commentRoutes);
+
+// Depois rotas genéricas
+app.use("/api", authRoutes);        // públicas (register, login, etc)
+app.use("/api/user", userRoutes);   // protegidas (profile, logout)
+
+// Handler para 404 - antes do errorHandler
+app.use((req, res, next) => {
+  console.log(`[404] Rota não encontrada: ${req.method} ${req.path}`);
+  res.status(404).json({ error: "Rota não encontrada", path: req.path, method: req.method });
+});
 
 app.use(errorHandler);
 

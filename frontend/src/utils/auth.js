@@ -12,7 +12,11 @@ export const clearTokens = () => {
  * Obter token de qualquer um dos storages
  */
 export const getToken = () => {
-  return localStorage.getItem("token") || sessionStorage.getItem("token");
+  const localToken = localStorage.getItem("token");
+  const sessionToken = sessionStorage.getItem("token");
+  const token = localToken || sessionToken;
+  console.log("[AUTH] getToken - localStorage:", localToken ? "existe" : "não existe", "sessionStorage:", sessionToken ? "existe" : "não existe", "resultado:", token ? "token encontrado" : "sem token");
+  return token;
 };
 
 /**

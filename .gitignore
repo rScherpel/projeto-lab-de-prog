@@ -1,7 +1,8 @@
 # Dependencies
 node_modules/
 */node_modules/
-
+//teste@    teste.com
+//Teste@123
 # Build outputs
 dist/
 build/

@@ -3,7 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "@/pages/login/Login";
 import Register from "@/pages/register/Register";
 import Home from "@/pages/home/Home";
-import Dashboard from "@/pages/dashBoard/Dashboard";
+import Projects from "@/pages/projects/Projects";
+import Board from "@/pages/board/Board";
+import IssueDetail from "@/pages/issue/IssueDetail";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
 
@@ -25,10 +27,28 @@ function App() {
         />
 
         <Route
-          path="/dashboard"
+          path="/projects"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <Projects />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/board/:projectId"
+          element={
+            <ProtectedRoute>
+              <Board />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/issue/:issueId"
+          element={
+            <ProtectedRoute>
+              <IssueDetail />
             </ProtectedRoute>
           }
         />

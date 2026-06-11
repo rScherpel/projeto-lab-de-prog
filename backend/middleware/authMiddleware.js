@@ -6,6 +6,8 @@ const SECRET = "segredo_super";
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
 
+  console.log(`[AUTH] ${req.method} ${req.path} - Auth Header: ${authHeader ? "presente" : "ausente"}`);
+
   if (!authHeader) {
     return next(new AppError("Token não fornecido", 401));
   }
@@ -20,8 +22,10 @@ function authMiddleware(req, res, next) {
   try {
     const decoded = jwt.verify(token, SECRET);
     req.user = decoded;
+    console.log(`[AUTH] Token válido para usuário: ${decoded.email}`);
     next();
   } catch (error) {
+    console.log(`[AUTH] Token inválido: ${error.message}`);
     next(new AppError("Token inválido", 401));
   }
 }
